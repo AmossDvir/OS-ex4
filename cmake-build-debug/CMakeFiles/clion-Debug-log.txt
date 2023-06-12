@@ -1,0 +1,4 @@
+C:\Users\user\AppData\Local\JetBrains\CLion2023.1\cygwin_cmake\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S "/cygdrive/d/Computer Science/OS/ex4" -B "/cygdrive/d/Computer Science/OS/ex4/cmake-build-debug"
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /cygdrive/d/Computer Science/OS/ex4/cmake-build-debug
