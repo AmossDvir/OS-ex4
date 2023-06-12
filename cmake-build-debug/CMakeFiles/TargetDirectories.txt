@@ -1,3 +1,0 @@
-/cygdrive/d/Computer Science/OS/ex4/cmake-build-debug/CMakeFiles/ex4.dir
-/cygdrive/d/Computer Science/OS/ex4/cmake-build-debug/CMakeFiles/edit_cache.dir
-/cygdrive/d/Computer Science/OS/ex4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
