@@ -1,0 +1,69 @@
+function VMread(pageNumber, valuePointer):
+    // Check if the page number is valid
+    if pageNumber is not a valid page number:
+        return error
+
+    // Get the root table entry
+    rootTableEntry = rootTable[pageNumber]
+
+    // Check if the page is in physical memory or on the hard drive
+    if rootTableEntry is in physical memory:
+        // Get the frame number from the root table entry
+        frameNumber = rootTableEntry.frameNumber
+
+        // Get the value from the physical memory at the specified frame and offset
+        value = PhysicalMemory[frameNumber][pageNumber.offset]
+
+        // Store the value in the specified value pointer
+        *valuePointer = value
+
+        return success
+    else:
+        // The page is on the hard drive, so we need to fetch it
+        // Perform the necessary steps to find the frames for the missing tables and the missing page
+        // This process involves traversing the page tables tree and mapping the page to physical memory
+
+        // Once the page is mapped to physical memory, get the frame number from the root table entry
+        frameNumber = rootTableEntry.frameNumber
+
+        // Get the value from the physical memory at the specified frame and offset
+        value = PhysicalMemory[frameNumber][pageNumber.offset]
+
+        // Store the value in the specified value pointer
+        *valuePointer = value
+
+        return success
+
+
+------------------------------------------------------
+
+
+function VMwrite(pageNumber, value):
+    // Check if the page number is valid
+    if pageNumber is not a valid page number:
+        return error
+
+    // Get the root table entry
+    rootTableEntry = rootTable[pageNumber]
+
+    // Check if the page is in physical memory or on the hard drive
+    if rootTableEntry is in physical memory:
+        // Get the frame number from the root table entry
+        frameNumber = rootTableEntry.frameNumber
+
+        // Write the value to the physical memory at the specified frame and offset
+        PhysicalMemory[frameNumber][pageNumber.offset] = value
+
+        return success
+    else:
+        // The page is on the hard drive, so we need to fetch it
+        // Perform the necessary steps to find the frames for the missing tables and the missing page
+        // This process involves traversing the page tables tree and mapping the page to physical memory
+
+        // Once the page is mapped to physical memory, get the frame number from the root table entry
+        frameNumber = rootTableEntry.frameNumber
+
+        // Write the value to the physical memory at the specified frame and offset
+        PhysicalMemory[frameNumber][pageNumber.offset] = value
+
+        return success
