@@ -97,21 +97,23 @@ void newFunction (word_t value)
 void traverseThroughTable(uint64_t page, int treeLevel, uint64_t baseAddress) //dfs  100110011001  [100][110][011][001]
 {
 //    Base cond:
-    if (treeLevel >= TABLES_DEPTH){
-        return;
+  if (treeLevel >= TABLES_DEPTH)
+    {
+      return;
     }
 
-    uint64_t lastBits = (1ULL << (treeLevel * NUM_PAGES)) & page;
-    baseAddress = baseAddress + lastBits;
-    if (baseAddress == 0){
-        //Creates new frame:
+  uint64_t lastBits = (1ULL << (treeLevel * NUM_PAGES)) & page;
+  baseAddress = baseAddress + lastBits;
+  if (baseAddress == 0)
+    {
+      //Creates new frame:
 
     }
 
-    word_t newAddr;
-    PMread(baseAddress, &newAddr);
+  word_t newAddr;
+  PMread (baseAddress, &newAddr);
 
-    traverseThroughTable(page, treeLevel + 1, baseAddress)
+//  traverseThroughTable (page, treeLevel + 1, baseAddress)
 
 }
 
