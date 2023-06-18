@@ -52,8 +52,12 @@ bool validatePageNumber(uint64_t pageNum)
 }
 
 
+uint64_t concatenateBits(uint64_t frameNum, uint64_t offset)
+{
+    return (frameNum << OFFSET_WIDTH) | offset;
+}
 
-void newFunction (word_t value)
+void newFunction(word_t value)
 {
     //iterate on every level of the tree - if it is the last one we reached
     // a leaf
@@ -63,7 +67,7 @@ void newFunction (word_t value)
         if (level == TABLES_DEPTH)
         {
             uint64_t parseAddressLast = 0;//todo
-            PMwrite (parseAddressLast, value);
+            PMwrite(parseAddressLast, value);
             break;
         }
 
@@ -72,7 +76,7 @@ void newFunction (word_t value)
         uint64_t parseAddress = 0;//todo: for example 101
         uint64_t rootAddress = 0 * PAGE_SIZE;
         uint64_t currentAddress = rootAddress + parseAddress;
-        PMread (currentAddress, &valueAddress);
+        PMread(currentAddress, &valueAddress);
         if (valueAddress == 0)
         {
             /* find unused frame or evict*/
@@ -80,9 +84,9 @@ void newFunction (word_t value)
             if (level < TABLES_DEPTH - 1)
             {//todo check what the fit condition - do it
                 // only if the next layer is a table
-                fillFrameWithZeros (valueAddress);
+                fillFrameWithZeros(valueAddress);
             }
-            PMwrite (currentAddress, tempFrame);
+            PMwrite(currentAddress, tempFrame);
             tempAddress = tempFrame;
         }
     }
@@ -90,35 +94,34 @@ void newFunction (word_t value)
 }
 
 
-
 /**
- *
- */                                                      //      000000000000   1ULL << (treeLevel * NUM_PAGES)
-void traverseThroughTable(uint64_t page, int treeLevel, uint64_t baseAddress) //dfs  100110011001  [100][110][011][001]
+ * DFS
+ */
+uint64_t traverseThroughTable(uint64_t page, uint64_t offset, int treeLevel, uint64_t baseAddress, uint64_t physicalAddress)
 {
-//    Base cond:
-  if (treeLevel >= TABLES_DEPTH)
+    //    Base cond:
+    if (treeLevel == TABLES_DEPTH - 1)
     {
-      return;
+        uint64_t valueAddress = concatenateBits(physicalAddress, offset);
+        return valueAddress;
     }
 
-  uint64_t lastBits = (1ULL << (treeLevel * NUM_PAGES)) & page;
-  baseAddress = baseAddress + lastBits;
-  if (baseAddress == 0)
-    {
-      //Creates new frame:
+    uint64_t lastBits = (1ULL << (treeLevel * NUM_PAGES)) & page;
+    baseAddress = baseAddress + lastBits;
 
+
+    word_t newAddr;
+    PMread(baseAddress, &newAddr);
+
+    if (baseAddress == 0)
+    {
+        //todo: Find an empty frame/evict
+        //Creates new frame:
+        fillFrameWithZeros(newAddr);
     }
 
-  word_t newAddr;
-  PMread (baseAddress, &newAddr);
-
-//  traverseThroughTable (page, treeLevel + 1, baseAddress)
-
+    return traverseThroughTable(page, offset, treeLevel + 1, baseAddress, newAddr);
 }
-
-
-
 
 /**
  * Translates virtual address to a physical address
@@ -135,8 +138,9 @@ int translateLogicToPhysical(uint64_t virtualAddress, uint32_t *physical_address
     {
         return FAILURE;
     }
-    traverseThroughTable(pageNum, 0, 0, );
-//    *physical_address = (frameNum << OFFSET_WIDTH) | offset;
+    traverseThroughTable(pageNum, offset, 0, 0,);
+
+    //    *physical_address = (frameNum << OFFSET_WIDTH) | offset;
     return SUCCESS;
 }
 
