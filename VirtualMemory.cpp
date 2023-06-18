@@ -8,17 +8,16 @@
 #define SUCCESS 1
 #define FAILURE 0
 
-const uint64_t offsetMask = (1ULL << OFFSET_WIDTH) - 1;
-const uint64_t pageMask = ~offsetMask;
-
 /**
  * Extracts the page number from the virtual address
  * @param virtualAddress
  * @return
  */
-uint64_t extractPageNumber(uint64_t virtualAddress)
+uint64_t extractPageNumber (uint64_t virtualAddress)
 {
-    return virtualAddress & pageMask;
+  const uint64_t offsetMask = (1ULL << OFFSET_WIDTH) - 1;
+  const uint64_t pageMask = ~offsetMask;
+  return virtualAddress & pageMask;
 }
 
 /**
@@ -26,102 +25,133 @@ uint64_t extractPageNumber(uint64_t virtualAddress)
  * @param virtualAddress
  * @return
  */
-uint64_t extractOffset(uint64_t virtualAddress)
+uint64_t extractOffset (uint64_t virtualAddress)
 {
-    return virtualAddress & offsetMask;
+  const uint64_t offsetMask = (1ULL << OFFSET_WIDTH) - 1;
+  return virtualAddress & offsetMask;
 }
 
-
-void fillFrameWithZeros(uint64_t frameNumber)
+void fillFrameWithZeros (uint64_t frameNumber)
 {
-    for (uint64_t i = 0; i < PAGE_SIZE; ++i)
+  for (uint64_t i = 0; i < PAGE_SIZE; ++i)
     {
-        PMwrite(PAGE_SIZE * frameNumber + i, 0);
+      PMwrite (PAGE_SIZE * frameNumber + i, 0);
     }
 }
-
 
 /**
  * Validates the page number
  * @param pageNum
  * @return
  */
-bool validatePageNumber(uint64_t pageNum)
+bool validatePageNumber (uint64_t pageNum)
 {
-    return (pageNum < VIRTUAL_MEMORY_SIZE);
+  return (pageNum < VIRTUAL_MEMORY_SIZE);
 }
 
-
-uint64_t concatenateBits(uint64_t frameNum, uint64_t offset)
+uint64_t concatenateBits (uint64_t frameNum, uint64_t offset)
 {
-    return (frameNum << OFFSET_WIDTH) | offset;
+  return (frameNum << OFFSET_WIDTH) | offset;
 }
 
-void newFunction(word_t value)
+void newFunction (word_t value)
 {
-    //iterate on every level of the tree - if it is the last one we reached
-    // a leaf
-    for (int level = 0; level < TABLES_DEPTH; level++)
+  //iterate on every level of the tree - if it is the last one we reached
+  // a leaf
+  for (int level = 0; level < TABLES_DEPTH; level++)
     {
-        //if this is the last layer
-        if (level == TABLES_DEPTH)
+      //if this is the last layer
+      if (level == TABLES_DEPTH)
         {
-            uint64_t parseAddressLast = 0;//todo
-            PMwrite(parseAddressLast, value);
-            break;
+          uint64_t parseAddressLast = 0;//todo
+          PMwrite (parseAddressLast, value);
+          break;
         }
 
-        uint64_t tempAddress;
-        word_t valueAddress;
-        uint64_t parseAddress = 0;//todo: for example 101
-        uint64_t rootAddress = 0 * PAGE_SIZE;
-        uint64_t currentAddress = rootAddress + parseAddress;
-        PMread(currentAddress, &valueAddress);
-        if (valueAddress == 0)
+      uint64_t tempAddress;
+      word_t valueAddress;
+      uint64_t parseAddress = 0;//todo: for example 101
+      uint64_t rootAddress = 0 * PAGE_SIZE;
+      uint64_t currentAddress = rootAddress + parseAddress;
+      PMread (currentAddress, &valueAddress);
+      if (valueAddress == 0)
         {
-            /* find unused frame or evict*/
-            word_t tempFrame = 0;//f1 todo check the type
-            if (level < TABLES_DEPTH - 1)
+          /* find unused frame or evict*/
+          word_t tempFrame = 0;//f1 todo check the type
+          if (level < TABLES_DEPTH - 1)
             {//todo check what the fit condition - do it
-                // only if the next layer is a table
-                fillFrameWithZeros(valueAddress);
+              // only if the next layer is a table
+              fillFrameWithZeros (valueAddress);
             }
-            PMwrite(currentAddress, tempFrame);
-            tempAddress = tempFrame;
+          PMwrite (currentAddress, tempFrame);
+          tempAddress = tempFrame;
         }
     }
 
 }
 
+
+uint64_t findUnusedFrame(word_t table,uint64_t frameNum){
+
+  for(int i=0;i<TABLES_DEPTH;i++){
+      word_t entry;
+      PMread (table+i,&entry);
+      if(entry!=0){
+          //
+        }
+    }
+  return -1;
+
+}
+
+
+uint64_t cyclicNum(){
+ // min{NUM_PAGES - |page_swapped_in - p|,
+  //|page_swapped_in - p|} is maximal
+
+
+}
 
 /**
  * DFS
  */
-uint64_t traverseThroughTable(uint64_t page, uint64_t offset, int treeLevel, uint64_t baseAddress, uint64_t physicalAddress)
+uint64_t
+traverseThroughTable (uint64_t page, uint64_t offset, int treeLevel, uint64_t baseAddress, uint64_t physicalAddress)
 {
-    //    Base cond:
-    if (treeLevel == TABLES_DEPTH - 1)
+  //    Base cond:
+  if (treeLevel == TABLES_DEPTH - 1)
     {
-        uint64_t valueAddress = concatenateBits(physicalAddress, offset);
-        return valueAddress;
+      uint64_t valueAddress = concatenateBits (physicalAddress, offset);
+      return valueAddress;
     }
 
-    uint64_t lastBits = (1ULL << (treeLevel * NUM_PAGES)) & page;
-    baseAddress = baseAddress + lastBits;
+  uint64_t lastBits = (1ULL << (treeLevel * NUM_PAGES)) & page;
+  int shiftAmount = (TABLES_DEPTH - treeLevel - 1) * NUM_PAGES;
+  uint64_t currentPage = (page >> shiftAmount) & ((1ULL << NUM_PAGES) - 1);
+  baseAddress = baseAddress + lastBits;
 
+  word_t newAddr;
+  PMread (baseAddress, &newAddr);
 
-    word_t newAddr;
-    PMread(baseAddress, &newAddr);
-
-    if (baseAddress == 0)
+  if (baseAddress == 0)
     {
-        //todo: Find an empty frame/evict
-        //Creates new frame:
-        fillFrameWithZeros(newAddr);
+      //todo: Find an empty frame/evict
+      //Creates new frame:
+      uint64_t frameNum= findUnusedFrame (0,0);
+      if(frameNum==-1){
+          PMevict (0,0);
+          //delete parents
+      }
+      fillFrameWithZeros (newAddr);
+//      PMwrite ()
     }
 
-    return traverseThroughTable(page, offset, treeLevel + 1, baseAddress, newAddr);
+  return traverseThroughTable (page, offset,
+                               treeLevel + 1, baseAddress, newAddr);
 }
+
+
+
 
 /**
  * Translates virtual address to a physical address
@@ -129,28 +159,28 @@ uint64_t traverseThroughTable(uint64_t page, uint64_t offset, int treeLevel, uin
  * @param physical_address
  * @return
  */
-int translateLogicToPhysical(uint64_t virtualAddress, uint32_t *physical_address)
+int
+translateLogicToPhysical (uint64_t virtualAddress, uint32_t *physical_address)
 {
-    // [011101001][010]
-    uint64_t offset = extractOffset(virtualAddress);
-    uint64_t pageNum = extractPageNumber(virtualAddress); // p1[011]p2[101]p3[001]
-    if (!validatePageNumber(pageNum))
+  // [011101001][010]
+  uint64_t offset = extractOffset (virtualAddress);
+  uint64_t pageNum = extractPageNumber (virtualAddress); // p1[011]p2[101]p3[001]
+  if (!validatePageNumber (pageNum))
     {
-        return FAILURE;
+      return FAILURE;
     }
-    traverseThroughTable(pageNum, offset, 0, 0,);
+  traverseThroughTable (pageNum, offset, 0, 0,);
 
-    //    *physical_address = (frameNum << OFFSET_WIDTH) | offset;
-    return SUCCESS;
+  //    *physical_address = (frameNum << OFFSET_WIDTH) | offset;
+  return SUCCESS;
 }
-
 
 /*
  * Initialize the virtual memory.
  */
-void VMinitialize()
+void VMinitialize ()
 {
-    PMwrite(0, 0);
+  PMwrite (0, 0);
 }
 
 /* Reads a word from the given virtual address
@@ -160,20 +190,21 @@ void VMinitialize()
  * returns 0 on failure (if the address cannot be mapped to a physical
  * address for any reason)
  */
-int VMread(uint64_t virtualAddress, word_t *value)
+int VMread (uint64_t virtualAddress, word_t *value)
 {
-    uint32_t physical_address;
-    int ret = translateLogicToPhysical(virtualAddress, &physical_address);
+  uint32_t physical_address;
+  int ret = translateLogicToPhysical (virtualAddress, &physical_address);
 
-    // If the translation failed, then do nothing.
-    if (ret == FAILURE)
+  // If the translation failed, then do nothing.
+  if (ret == FAILURE)
     {
-        return FAILURE;
+      return FAILURE;
     }
 
-    // Read the value from the physical address.
-    PMread(physical_address, value);
-    return SUCCESS;
+  // Read the value from the physical address.
+//  traverseThroughTable
+  PMread (physical_address, value);
+  return SUCCESS;
 }
 
 /* Writes a word to the given virtual address.
@@ -182,17 +213,17 @@ int VMread(uint64_t virtualAddress, word_t *value)
  * returns 0 on failure (if the address cannot be mapped to a physical
  * address for any reason)
  */
-int VMwrite(uint64_t virtualAddress, word_t value)
+int VMwrite (uint64_t virtualAddress, word_t value)
 {
-    uint32_t physical_address;
-    int ret = translateLogicToPhysical(virtualAddress, &physical_address);
-    if (ret == FAILURE)
+  uint32_t physical_address;
+  int ret = translateLogicToPhysical (virtualAddress, &physical_address);
+  if (ret == FAILURE)
     {
-        return FAILURE;
+      return FAILURE;
     }
-
-    PMwrite(physical_address, value);
-    return SUCCESS;
+//    traverseThroughTable
+  PMwrite (physical_address, value);
+  return SUCCESS;
 }
 
 
