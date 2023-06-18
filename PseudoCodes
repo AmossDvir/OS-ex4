@@ -67,3 +67,107 @@ function VMwrite(pageNumber, value):
         PhysicalMemory[frameNumber][pageNumber.offset] = value
 
         return success
+
+
+        --------------------
+
+
+
+        /*
+           * separate 13 to page and offset 01101
+           * we want to write value to the page - 6
+           * first we find page 6 - traversing the tree according to the page bits
+           * 0110
+           * read the ram in address 0+0=0// frame number*PAGE_SIZE+relevant offset
+           * can be more than 1 bit
+           *
+           * if content == 0 create frame (or evict)
+           * find new frame by traversing the entire tree in dfs
+           * starting from the root (frame 0), iterate over its rows and recursively
+           * entering every entry that isn't 0
+           * so the new frame will be 1
+           * we write to address 0 in the RAM 1 (frame 1) and fill it with zeros
+           * link it from the root table(slide 6 in the pdf)
+           * keep track of the maximal frame visited during the traversal
+           * according to the bits we write in the corresponding cell of the frame(?)
+           * PMrestore(4, 6)(?)
+           * combine physical address with offset and call PMwrite(new address,
+           * original value)
+           * slide 14 in pdf to read again
+           *
+           * for each page we need to check its cyclic distance from -15- the page
+           * were trying to access
+           *
+           *evict:
+           *    PMevict + remove parents link - go to the the parent and delete the
+           *    link+go to the address and fill with zeros+update and write it in
+           *    the new place
+           *    playing with removing unused tables but not the current
+           * */
+
+
+
+
+
+
+--------------------------
+
+
+
+void newFunction (word_t value)
+{
+  //iterate on every level of the tree - if it is the last one we reached
+  // a leaf
+  for (int level = 0; level < TABLES_DEPTH; level++)
+    {
+      //if this is the last layer
+      if (level == TABLES_DEPTH)
+        {
+          uint64_t parseAddressLast = 0;//todo
+          PMwrite (parseAddressLast, value);
+          break;
+        }
+
+
+
+      uint64_t tempAddress;
+      word_t valueAddress;
+      uint64_t parseAddress = 0;//todo: for example 101
+      uint64_t rootAddress = 0 * PAGE_SIZE;
+      uint64_t currentAddress = rootAddress + parseAddress;
+      PMread (currentAddress, &valueAddress);
+      if (valueAddress == 0)
+        {
+          /* find unused frame or evict*/
+          word_t tempFrame = 0;//f1 todo check the type
+          if (level < TABLES_DEPTH - 1)
+            {//todo check what the fit condition - do it
+              // only if the next layer is a table
+              fillFrameWithZeros (valueAddress);
+            }
+          PMwrite (currentAddress, tempFrame);
+          tempAddress = tempFrame;
+        }
+
+
+    }
+
+
+
+
+  //PMread(0 + 5, &addr1) // first translation
+//If (addr1 == 0) then
+//    Find an unused frame or evict a page from some frame. Suppose this frame number is f1
+//    Write 0 in all of its contents (only necessary if next layer is a table)
+//PMwrite(0 + 5, f1)
+//addr1 = f1
+//PMread(addr1 * PAGE_SIZE + 1, &addr2) // second translation
+//If (addr2 == 0) then
+//    Find an unused frame or evict a page from some frame. Suppose this frame number is f2.
+//Make sure you are not evicting f1 by accident
+//Restore the page we are looking for to frame f2 (only necessary pointing to a page)
+//PMwrite(addr1 * PAGE_SIZE + 1, f2)
+//addr2 = f2
+//PMwrite(addr2 * PAGE_SIZE + 6, value)
+
+}
