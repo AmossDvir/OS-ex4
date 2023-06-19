@@ -9,6 +9,6 @@ add_executable(ex4
         MemoryConstants.h
         PhysicalMemory.cpp
         PhysicalMemory.h
-#        SimpleTest.cpp
+        SimpleTest.cpp
         VirtualMemory.cpp
         VirtualMemory.h)
