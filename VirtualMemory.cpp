@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <bitset>
 #include "VirtualMemory.h"
 
 #define SUCCESS 1
@@ -91,6 +92,8 @@ void newFunction (word_t value)
 }
 
 
+
+
 uint64_t findUnusedFrame(word_t table,uint64_t frameNum){
 
   for(int i=0;i<TABLES_DEPTH;i++){
@@ -105,12 +108,12 @@ uint64_t findUnusedFrame(word_t table,uint64_t frameNum){
 }
 
 
-uint64_t cyclicNum(){
- // min{NUM_PAGES - |page_swapped_in - p|,
-  //|page_swapped_in - p|} is maximal
-
-
-}
+//uint64_t cyclicNum(){
+// // min{NUM_PAGES - |page_swapped_in - p|,
+//  //|page_swapped_in - p|} is maximal
+//
+//
+//}
 
 /**
  * DFS
@@ -126,8 +129,8 @@ traverseThroughTable (uint64_t page, uint64_t offset, int treeLevel, uint64_t ba
     }
 
   uint64_t lastBits = (1ULL << (treeLevel * NUM_PAGES)) & page;
-  int shiftAmount = (TABLES_DEPTH - treeLevel - 1) * NUM_PAGES;
-  uint64_t currentPage = (page >> shiftAmount) & ((1ULL << NUM_PAGES) - 1);
+//  int shiftAmount = (TABLES_DEPTH - treeLevel - 1) * NUM_PAGES;
+//  uint64_t currentPage = (page >> shiftAmount) & ((1ULL << NUM_PAGES) - 1);
   baseAddress = baseAddress + lastBits;
 
   word_t newAddr;
@@ -151,6 +154,62 @@ traverseThroughTable (uint64_t page, uint64_t offset, int treeLevel, uint64_t ba
 }
 
 
+uint64_t
+iterations (uint64_t virtualAddress, uint64_t baseAddress,uint64_t frameIndex)
+{
+    uint64_t offset=virtualAddress%PAGE_SIZE;
+    uint64_t pages=virtualAddress/PAGE_SIZE;
+    uint64_t framesInUse [TABLES_DEPTH];
+//    uint64_t numBitsPage=(VIRTUAL_ADDRESS_WIDTH-OFFSET_WIDTH)/TABLES_DEPTH;
+
+    for(int i=0;i<TABLES_DEPTH;i++){
+        uint64_t currentBits =(pages >> (OFFSET_WIDTH * (TABLES_DEPTH - i - 1))) & ((1 << OFFSET_WIDTH) - 1);
+        uint64_t newAddress=frameIndex*PAGE_SIZE+currentBits;
+        word_t f;
+        PMread(newAddress,&f);
+        if(f==0){
+            //case 1: a frame containing an empty table - all rows are 0, remove reference from its parents
+
+
+            //case 2: an unused frame, keep variable with maximal frame index reference from any table we visit, if
+            // max_frame_index+1 < NUM_FRAMES then we know that the frame in the index (max_frame_index + 1) is unused.
+
+
+            //case 3: ll frames are already used. swapped + cyclic
+        }
+    }
+
+//        uint64_t frameNum= findUnusedFrame (0,0);
+//        if(frameNum==-1){
+//            PMevict (0,0);
+//            //delete parents
+//        }
+//        fillFrameWithZeros (newAddr);
+//      PMwrite ()
+    return 0;
+}
+
+
+//uint64_t calculateLog2(uint64_t n) {
+//    uint64_t logValue = 0;
+//    while (n > 1) {
+//        n >>= 1;
+//        logValue++;
+//    }
+//    return logValue;
+//}
+
+//void iterateAllTablePages(uint64_t tablesPages,uint64_t offset){
+//    uint64_t pagesLeft=tablesPages;
+//    uint64_t pageBitsNum=calculateLog2(PAGE_SIZE);
+//    int numOfTablesPages=2;
+//    for(int i=0;i<numOfTablesPages;i++){
+//        uint64_t currentPage = pagesLeft & ((1LL << pageBitsNum) - 1);
+//        pagesLeft >>= pageBitsNum;
+////        uint64_t physicalAddress=0;///
+////        uint64_t frameFound=traverseThroughTable(currentPage,offset,0,0,physicalAddress);
+//    }
+//}
 
 
 /**
@@ -169,7 +228,7 @@ translateLogicToPhysical (uint64_t virtualAddress, uint32_t *physical_address)
     {
       return FAILURE;
     }
-  traverseThroughTable (pageNum, offset, 0, 0,);
+//  traverseThroughTable (pageNum, offset, 0, 0,);
 
   //    *physical_address = (frameNum << OFFSET_WIDTH) | offset;
   return SUCCESS;
@@ -256,3 +315,9 @@ mmu -> divide to page number & offset (p|d)
     * whan a page we want to access not mapped to a frame(valid bit =0)
     * there is page fault
 */
+
+int main(){
+    uint64_t num=0b11110101000101100001;;
+    iterations(num,0,0);
+    return 0;
+}
