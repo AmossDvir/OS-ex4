@@ -55,44 +55,6 @@ uint64_t concatenateBits (uint64_t frameNum, uint64_t offset)
   return (frameNum << OFFSET_WIDTH) | offset;
 }
 
-void newFunction (word_t value)
-{
-  //iterate on every level of the tree - if it is the last one we reached
-  // a leaf
-  for (int level = 0; level < TABLES_DEPTH; level++)
-    {
-      //if this is the last layer
-      if (level == TABLES_DEPTH)
-        {
-          uint64_t parseAddressLast = 0;//todo
-          PMwrite (parseAddressLast, value);
-          break;
-        }
-
-      uint64_t tempAddress;
-      word_t valueAddress;
-      uint64_t parseAddress = 0;//todo: for example 101
-      uint64_t rootAddress = 0 * PAGE_SIZE;
-      uint64_t currentAddress = rootAddress + parseAddress;
-      PMread (currentAddress, &valueAddress);
-      if (valueAddress == 0)
-        {
-          /* find unused frame or evict*/
-          word_t tempFrame = 0;//f1 todo check the type
-          if (level < TABLES_DEPTH - 1)
-            {//todo check what the fit condition - do it
-              // only if the next layer is a table
-              fillFrameWithZeros (valueAddress);
-            }
-          PMwrite (currentAddress, tempFrame);
-          tempAddress = tempFrame;
-        }
-    }
-
-}
-
-
-
 
 uint64_t findUnusedFrame(word_t table,uint64_t frameNum){
 
@@ -107,6 +69,15 @@ uint64_t findUnusedFrame(word_t table,uint64_t frameNum){
 
 }
 
+
+uint64_t isEmptyTable(uint64_t ){
+    for (int i=0;i<PAGE_SIZE;i++){
+        if
+    }
+
+
+    return 0;
+}
 
 //uint64_t cyclicNum(){
 // // min{NUM_PAGES - |page_swapped_in - p|,
@@ -154,22 +125,32 @@ traverseThroughTable (uint64_t page, uint64_t offset, int treeLevel, uint64_t ba
 }
 
 
+uint64_t findFrameWithEmptyTable(uint64_t *framesInUse){
+
+
+
+
+
+
+    return 0;
+}
+
 uint64_t
-iterations (uint64_t virtualAddress, uint64_t baseAddress,uint64_t frameIndex)
+iterations (uint64_t virtualAddress,uint64_t frameIndex)
 {
     uint64_t offset=virtualAddress%PAGE_SIZE;
-    uint64_t pages=virtualAddress/PAGE_SIZE;
+    uint64_t pages=virtualAddress/PAGE_SIZE;//ignore garbage values
     uint64_t framesInUse [TABLES_DEPTH];
 //    uint64_t numBitsPage=(VIRTUAL_ADDRESS_WIDTH-OFFSET_WIDTH)/TABLES_DEPTH;
 
     for(int i=0;i<TABLES_DEPTH;i++){
-        uint64_t currentBits =(pages >> (OFFSET_WIDTH * (TABLES_DEPTH - i - 1))) & ((1 << OFFSET_WIDTH) - 1);
+        uint64_t currentBits =(pages >> (OFFSET_WIDTH * (TABLES_DEPTH - i - 1))) & ((1 << OFFSET_WIDTH) - 1);//check for different values
         uint64_t newAddress=frameIndex*PAGE_SIZE+currentBits;
         word_t f;
         PMread(newAddress,&f);
         if(f==0){
             //case 1: a frame containing an empty table - all rows are 0, remove reference from its parents
-
+            uint64_t  checkFindFrameEmptyTable=findFrameWithEmptyTable();
 
             //case 2: an unused frame, keep variable with maximal frame index reference from any table we visit, if
             // max_frame_index+1 < NUM_FRAMES then we know that the frame in the index (max_frame_index + 1) is unused.
@@ -188,28 +169,6 @@ iterations (uint64_t virtualAddress, uint64_t baseAddress,uint64_t frameIndex)
 //      PMwrite ()
     return 0;
 }
-
-
-//uint64_t calculateLog2(uint64_t n) {
-//    uint64_t logValue = 0;
-//    while (n > 1) {
-//        n >>= 1;
-//        logValue++;
-//    }
-//    return logValue;
-//}
-
-//void iterateAllTablePages(uint64_t tablesPages,uint64_t offset){
-//    uint64_t pagesLeft=tablesPages;
-//    uint64_t pageBitsNum=calculateLog2(PAGE_SIZE);
-//    int numOfTablesPages=2;
-//    for(int i=0;i<numOfTablesPages;i++){
-//        uint64_t currentPage = pagesLeft & ((1LL << pageBitsNum) - 1);
-//        pagesLeft >>= pageBitsNum;
-////        uint64_t physicalAddress=0;///
-////        uint64_t frameFound=traverseThroughTable(currentPage,offset,0,0,physicalAddress);
-//    }
-//}
 
 
 /**
@@ -318,6 +277,6 @@ mmu -> divide to page number & offset (p|d)
 
 int main(){
     uint64_t num=0b11110101000101100001;;
-    iterations(num,0,0);
+    iterations(num,0);
     return 0;
 }
