@@ -128,10 +128,6 @@ traverseThroughTable (uint64_t page, uint64_t offset, int treeLevel, uint64_t ba
 uint64_t findFrameWithEmptyTable(uint64_t *framesInUse){
 
 
-
-
-
-
     return 0;
 }
 
