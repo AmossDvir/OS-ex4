@@ -345,6 +345,7 @@ int VMwrite (uint64_t virtualAddress, word_t value)
 }
 
 
+
 //int main(){
 //    uint64_t num=0b11110101000101100001;;
 //    iterations(num,0);
