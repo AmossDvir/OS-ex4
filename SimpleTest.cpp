@@ -2,13 +2,13 @@
 #include <cstdio>
 #include <cassert>
 
-int main(int argc, char **argv) {
-    VMinitialize();
+int main (int argc, char **argv)
+{
+  VMinitialize ();
     for (uint64_t i = 0; i < (2 * NUM_FRAMES); ++i) {
         printf("writing to %llu\n", (long long int) i);
         VMwrite(5 * i * PAGE_SIZE, i);
     }
-
     for (uint64_t i = 0; i < (2 * NUM_FRAMES); ++i) {
         word_t value;
         VMread(5 * i * PAGE_SIZE, &value);
@@ -17,5 +17,5 @@ int main(int argc, char **argv) {
     }
     printf("success\n");
 
-    return 0;
+  return 0;
 }
