@@ -197,6 +197,7 @@ case1 (uint64_t pages, int treeLevel, uint64_t frameIndex, uint64_t parent, word
       return callingFrameIndex;
     }
 
+
   uint64_t currentOffset =
       (pages >> (OFFSET_WIDTH * (TABLES_DEPTH - treeLevel - 1)))
       & ((1 << OFFSET_WIDTH) - 1);//todo check for different values
