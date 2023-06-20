@@ -11,11 +11,11 @@
  * @param virtualAddress
  * @return
  */
-uint64_t extractPageNumber (uint64_t virtualAddress)
+uint64_t extractPageNumber(uint64_t virtualAddress)
 {
-  const uint64_t offsetMask = (1ULL << OFFSET_WIDTH) - 1;
-  const uint64_t pageMask = ~offsetMask;
-  return virtualAddress & pageMask;
+    const uint64_t offsetMask = (1ULL << OFFSET_WIDTH) - 1;
+    const uint64_t pageMask = ~offsetMask;
+    return virtualAddress & pageMask;
 }
 
 /**
@@ -23,17 +23,17 @@ uint64_t extractPageNumber (uint64_t virtualAddress)
  * @param virtualAddress
  * @return
  */
-uint64_t extractOffset (uint64_t virtualAddress)
+uint64_t extractOffset(uint64_t virtualAddress)
 {
-  const uint64_t offsetMask = (1ULL << OFFSET_WIDTH) - 1;
-  return virtualAddress & offsetMask;
+    const uint64_t offsetMask = (1ULL << OFFSET_WIDTH) - 1;
+    return virtualAddress & offsetMask;
 }
 
-void fillFrameWithZeros (uint64_t frameNumber)
+void fillFrameWithZeros(uint64_t frameNumber)
 {
-  for (uint64_t i = 0; i < PAGE_SIZE; ++i)
+    for (uint64_t i = 0; i < PAGE_SIZE; ++i)
     {
-      PMwrite (PAGE_SIZE * frameNumber + i, 0);
+        PMwrite(PAGE_SIZE * frameNumber + i, 0);
     }
 }
 
@@ -42,43 +42,43 @@ void fillFrameWithZeros (uint64_t frameNumber)
  * @param pageNum
  * @return
  */
-bool validatePageNumber (uint64_t virtualAddress)
+bool validatePageNumber(uint64_t virtualAddress)
 {
-  return (virtualAddress < VIRTUAL_MEMORY_SIZE);//check
+    return (virtualAddress < VIRTUAL_MEMORY_SIZE);//check
 }
 
-uint64_t concatenateBits (uint64_t frameNum, uint64_t offset)
+uint64_t concatenateBits(uint64_t frameNum, uint64_t offset)
 {
-  return (frameNum << OFFSET_WIDTH) | offset;
+    return (frameNum << OFFSET_WIDTH) | offset;
 }
 
-uint64_t findUnusedFrame (word_t table, uint64_t frameNum)
+uint64_t findUnusedFrame(word_t table, uint64_t frameNum)
 {
 
-  for (int i = 0; i < TABLES_DEPTH; i++)
+    for (int i = 0; i < TABLES_DEPTH; i++)
     {
-      word_t entry;
-      PMread (table + i, &entry);
-      if (entry != 0)
+        word_t entry;
+        PMread(table + i, &entry);
+        if (entry != 0)
         {
-          //
+            //
         }
     }
-  return -1;
+    return -1;
 
 }
 
-uint64_t isEmptyTable (uint64_t)
+uint64_t isEmptyTable(uint64_t)
 {
-  return 0;
+    return 0;
 }
 
-uint64_t cyclicNum (uint64_t pageSwappedIn, uint64_t p)
+uint64_t cyclicNum(uint64_t pageSwappedIn, uint64_t p)
 {
-  // min{NUM_PAGES - |page_swapped_in - p|,|page_swapped_in - p|} is maximal todo
-  auto cyclicDistance = abs (int (pageSwappedIn - p));
-  return (NUM_PAGES - cyclicDistance) > cyclicDistance
-         ? (uint64_t) cyclicDistance : (uint64_t) (NUM_PAGES - cyclicDistance);
+    // min{NUM_PAGES - |page_swapped_in - p|,|page_swapped_in - p|} is maximal todo
+    auto cyclicDistance = abs(int(pageSwappedIn - p));
+    return (NUM_PAGES - cyclicDistance) > cyclicDistance
+           ? (uint64_t) cyclicDistance : (uint64_t) (NUM_PAGES - cyclicDistance);
 }
 
 /**
@@ -119,158 +119,209 @@ uint64_t cyclicNum (uint64_t pageSwappedIn, uint64_t p)
 //                               treeLevel + 1, baseAddress, newAddr);
 //}
 
-bool isFrameEmptyTable (uint64_t frameIndex)
+bool isFrameEmptyTable(uint64_t frameIndex)
 {
-  word_t tmpValue;
-  for (int i = 0; i < PAGE_SIZE; i++)
+    word_t tmpValue;
+    for (int i = 0; i < PAGE_SIZE; i++)
     {
-      PMread (frameIndex * PAGE_SIZE + i, &tmpValue);
-      if (tmpValue != 0)
+        PMread(frameIndex * PAGE_SIZE + i, &tmpValue);
+        if (tmpValue != 0)
         {
-          return false;
+            return false;
         }
     }
-  return true;
+    return true;
 }
 
+//uint64_t
+//case2 (uint64_t pages, int treeLevel, uint64_t frameIndex,
+//       uint64_t maxIndex, uint64_t parent,uint64_t callingFrameIndex)
+//{
+//  //case 2: an unused frame, keep variable with maximal frame index reference from any table we visit, if
+//  // max_frame_index+1 < NUM_FRAMES then we know that the frame in the index (max_frame_index + 1) is unused.
+//
+//  uint64_t currentOffset =
+//      (pages >> (OFFSET_WIDTH * (TABLES_DEPTH - treeLevel - 1)))
+//      & ((1 << OFFSET_WIDTH) - 1);//todo check for different values
+//  uint64_t cellInPM = frameIndex * PAGE_SIZE + currentOffset;
+//  word_t childFrameIndex = 0;
+//  PMread (cellInPM, &childFrameIndex);
+//
+//  if (treeLevel == TABLES_DEPTH)
+//    {
+//      if (maxIndex + 1 < NUM_FRAMES)
+//        {
+//          return maxIndex + 1;
+//        }
+//      return callingFrameIndex;
+//    }
+//
+//  if (childFrameIndex == 0)
+//    {
+////      maxIndex = childFrameIndex > maxIndex ? childFrameIndex : maxIndex;//right
+//      maxIndex = frameIndex + 1;
+//      fillFrameWithZeros (frameIndex + 1);
+//      PMwrite (parent, (int) frameIndex + 1);//what happen when last level?
+//      return case2 (pages,
+//                    treeLevel + 1, frameIndex + 1,
+//                    maxIndex, frameIndex,callingFrameIndex);
+//    }
+//  return frameIndex;
+//}
+
+
 uint64_t
-case2 (uint64_t pages, int treeLevel, uint64_t frameIndex,
-       uint64_t maxIndex, uint64_t parent,uint64_t callingFrameIndex)
+case1(uint64_t pages, int treeLevel, uint64_t frameIndex, uint64_t parent, word_t callingFrameIndex)
 {
-  //case 2: an unused frame, keep variable with maximal frame index reference from any table we visit, if
-  // max_frame_index+1 < NUM_FRAMES then we know that the frame in the index (max_frame_index + 1) is unused.
 
-  uint64_t currentOffset =
-      (pages >> (OFFSET_WIDTH * (TABLES_DEPTH - treeLevel - 1)))
-      & ((1 << OFFSET_WIDTH) - 1);//todo check for different values
-  uint64_t cellInPM = frameIndex * PAGE_SIZE + currentOffset;
-  word_t childFrameIndex = 0;
-  PMread (cellInPM, &childFrameIndex);
-
-  if (treeLevel == TABLES_DEPTH)
+    if (treeLevel == TABLES_DEPTH)
     {
-      if (maxIndex + 1 < NUM_FRAMES)
+        return callingFrameIndex;
+    }
+
+
+    uint64_t currentOffset =
+            (pages >> (OFFSET_WIDTH * (TABLES_DEPTH - treeLevel - 1)))
+            & ((1 << OFFSET_WIDTH) - 1);//todo check for different values
+    uint64_t cellInPM = frameIndex * PAGE_SIZE + currentOffset;
+    if (isFrameEmptyTable(frameIndex) && frameIndex != callingFrameIndex)
+    {
+        // remove reference to this table from its parent
+        PMwrite(parent, 0);
+        //check if frame 0??
+        return frameIndex;
+    }
+
+    word_t childIndex = 0;
+    PMread(cellInPM, &childIndex);
+    if (childIndex == 0)
+    {
+        // Reached an empty frame, return the current frame index
+        return frameIndex;
+    }
+    return case1(pages,
+                 treeLevel + 1, childIndex,
+                 frameIndex, callingFrameIndex);
+}
+
+
+uint64_t case2(uint64_t pages, int treeLevel, uint64_t frameIndex,
+               uint64_t maxIndex, uint64_t parent, uint64_t callingFrameIndex)
+{
+    uint64_t currentOffset = (pages >> (OFFSET_WIDTH * (TABLES_DEPTH - treeLevel - 1))) & ((1 << OFFSET_WIDTH) - 1);
+    uint64_t cellInPM = frameIndex * PAGE_SIZE + currentOffset;
+
+    // Read the child frame index from the physical memory
+    word_t childFrameIndex = 0;
+    PMread(cellInPM, &childFrameIndex);
+
+    if (treeLevel == TABLES_DEPTH)
+    {
+        // Reached the last level of the tree
+        if (maxIndex + 1 < NUM_FRAMES)
         {
-          return maxIndex + 1;
+            // If max_frame_index+1 < NUM_FRAMES, return the next unused frame index
+            return maxIndex + 1;
         }
-      return callingFrameIndex;
+        return callingFrameIndex;
     }
 
-  if (childFrameIndex == 0)
+    if (childFrameIndex == 0)
     {
-//      maxIndex = childFrameIndex > maxIndex ? childFrameIndex : maxIndex;//right
-      maxIndex = frameIndex + 1;
-      fillFrameWithZeros (frameIndex + 1);
-      PMwrite (parent, (int) frameIndex + 1);//what happen when last level?
-      return case2 (pages,
-                    treeLevel + 1, frameIndex + 1,
-                    maxIndex, frameIndex,callingFrameIndex);
-    }
-  return frameIndex;
-}
-
-uint64_t
-case3 (uint64_t page, uint64_t parent, int treeLevel, uint64_t maxCyclicDist,
-       uint64_t
-       pageSwappedIn)
-{
-  //if maxFrame=NUM_FRAME
-  if (treeLevel == TABLES_DEPTH)
-    {
-      //case 3: ll frames are already used. swapped + cyclic
-      uint64_t currFrameCyclic = cyclicNum (pageSwappedIn, page);
-      if (currFrameCyclic > maxCyclicDist)
+        // Unused frame found, create new tables
+        if (frameIndex + 1 > maxIndex)
         {
-          maxCyclicDist = currFrameCyclic;
+            maxIndex = frameIndex + 1;
         }
-      return page;//???
+        fillFrameWithZeros(frameIndex + 1);
+        PMwrite(parent, frameIndex + 1);
+        return case2(pages, treeLevel + 1, frameIndex + 1, maxIndex, frameIndex, callingFrameIndex);
     }
-  return case3 (page, parent, treeLevel + 1, maxCyclicDist, pageSwappedIn);
+
+    // Update the maxIndex if necessary
+    if (childFrameIndex > maxIndex)
+    {
+        maxIndex = childFrameIndex;
+    }
+
+    // No unused frame found, return the current frame index
+    return frameIndex;
 }
 
+
 uint64_t
-case1 (uint64_t pages, int treeLevel, uint64_t frameIndex, uint64_t parent, word_t callingFrameIndex)
+case3(uint64_t page, uint64_t parent, int treeLevel, uint64_t maxCyclicDist,
+      uint64_t
+      pageSwappedIn)
 {
-
-  if (treeLevel == TABLES_DEPTH)
+    //if maxFrame=NUM_FRAME
+    if (treeLevel == TABLES_DEPTH)
     {
-      return callingFrameIndex;
+        //case 3: ll frames are already used. swapped + cyclic
+        uint64_t currFrameCyclic = cyclicNum(pageSwappedIn, page);
+        if (currFrameCyclic > maxCyclicDist)
+        {
+            maxCyclicDist = currFrameCyclic;
+        }
+        return page;//???
     }
-
-
-
-  uint64_t currentOffset =
-      (pages >> (OFFSET_WIDTH * (TABLES_DEPTH - treeLevel - 1)))
-      & ((1 << OFFSET_WIDTH) - 1);//todo check for different values
-  uint64_t cellInPM = frameIndex * PAGE_SIZE + currentOffset;
-  if (isFrameEmptyTable (frameIndex) && frameIndex != callingFrameIndex)
-    {
-      // remove reference to this table from its parent
-      PMwrite (parent, 0);
-      //check if frame 0??
-      return frameIndex;
-    }
-
-  word_t childIndex = 0;
-  PMread (cellInPM, &childIndex);
-  return case1 (pages,
-                treeLevel + 1, childIndex,
-                frameIndex, callingFrameIndex);
+    return case3(page, parent, treeLevel + 1, maxCyclicDist, pageSwappedIn);
 }
 
+
 uint64_t
-translate (uint64_t virtualAddress, uint64_t
+translate(uint64_t virtualAddress, uint64_t
 frameIndex)
 {
-  if (!validatePageNumber (virtualAddress))
+    if (!validatePageNumber(virtualAddress))
     {
-      return 0;
+        return 0;
     }
-  uint64_t offset = virtualAddress % PAGE_SIZE;
-  uint64_t pages = virtualAddress / PAGE_SIZE;//ignore garbage values
-  uint64_t framesInUse[TABLES_DEPTH];
-//    uint64_t numBitsPage=(VIRTUAL_ADDRESS_WIDTH-OFFSET_WIDTH)/TABLES_DEPTH;
-  uint64_t availableFrame;//initialize?
-  uint64_t physicalAddress;
-  for (int i = 0; i < TABLES_DEPTH; i++)
+    uint64_t offset = virtualAddress % PAGE_SIZE;
+    uint64_t pages = virtualAddress / PAGE_SIZE;//ignore garbage values
+    uint64_t framesInUse[TABLES_DEPTH];
+    //    uint64_t numBitsPage=(VIRTUAL_ADDRESS_WIDTH-OFFSET_WIDTH)/TABLES_DEPTH;
+    uint64_t availableFrame;//initialize?
+    uint64_t physicalAddress;
+    for (int i = 0; i < TABLES_DEPTH; i++)
     {
-      uint64_t currentBits = (pages >> (OFFSET_WIDTH * (TABLES_DEPTH - i - 1)))
-                             & ((1 << OFFSET_WIDTH)
-                                - 1);//check for different values
-      uint64_t newAddress = frameIndex * PAGE_SIZE + currentBits;
-      word_t frameVal;
-      PMread (newAddress, &frameVal);
-      if (frameVal == 0)
+        uint64_t currentBits = (pages >> (OFFSET_WIDTH * (TABLES_DEPTH - i - 1)))
+                               & ((1 << OFFSET_WIDTH)
+                                  - 1);//check for different values
+        uint64_t newAddress = frameIndex * PAGE_SIZE + currentBits;
+        word_t frameVal;
+        PMread(newAddress, &frameVal);
+        if (frameVal == 0)
         {
-          //case 1: a frame containing an empty table - all rows are 0, remove reference from its parents
-          uint64_t frameToSent = 0;
-          uint64_t case1Frame = case1 (pages, 0, frameIndex, 0, 0);//todo
-          // calling frame
-          if (frameToSent != case1Frame)
+            //case 1: a frame containing an empty table - all rows are 0, remove reference from its parents
+            uint64_t frameToSent = 0;
+            uint64_t case1Frame = case1(pages, 0, frameIndex, 0, 0);//todo
+            // calling frame
+            if (frameToSent != case1Frame)
             {
-              availableFrame = case1Frame;//???
-              physicalAddress=concatenateBits (availableFrame, offset);//
-              continue;
+                availableFrame = case1Frame;//???
+                physicalAddress = concatenateBits(availableFrame, offset);
+                continue;
             }
 
-          //case 2: an unused frame, keep variable with maximal frame index reference from any table we visit, if
-          // max_frame_index+1 < NUM_FRAMES then we know that the frame in the index (max_frame_index + 1) is unused.
-          uint64_t case2Frame = case2 (pages, 0, frameIndex,
-                                       0, 0,0);
-          if (frameToSent != case2Frame)
+            //case 2: an unused frame, keep variable with maximal frame index reference from any table we visit, if
+            // max_frame_index+1 < NUM_FRAMES then we know that the frame in the index (max_frame_index + 1) is unused.
+            uint64_t case2Frame = case2(pages, 0, frameIndex,
+                                        0, 0, 0);
+            if (frameToSent != case2Frame)
             {
-              availableFrame = case2Frame;//???
-              physicalAddress=concatenateBits (availableFrame, offset);//
-              continue;
+                availableFrame = case2Frame;//???
+                physicalAddress = concatenateBits(availableFrame, offset);//
+                continue;
             }
-          //case 3: ll frames are already used. swapped + cyclic
+            //case 3: ll frames are already used. swapped + cyclic
 
-          uint64_t case3Frame = case3 (pages, 0, 0, 0, 0);
-          if (frameToSent != case3Frame)
+            uint64_t case3Frame = case3(pages, 0, 0, 0, 0);
+            if (frameToSent != case3Frame)
             {
-              availableFrame=case3Frame;
-              physicalAddress=concatenateBits(availableFrame,offset);
-              continue;
+                availableFrame = case3Frame;
+                physicalAddress = concatenateBits(availableFrame, offset);
+                continue;
             }
         }
     }
@@ -307,9 +358,9 @@ frameIndex)
 /*
  * Initialize the virtual memory.
  */
-void VMinitialize ()
+void VMinitialize()
 {
-  PMwrite (0, 0);
+    PMwrite(0, 0);
 }
 
 /* Reads a word from the given virtual address
@@ -319,19 +370,19 @@ void VMinitialize ()
  * returns 0 on failure (if the address cannot be mapped to a physical
  * address for any reason)
  */
-int VMread (uint64_t virtualAddress, word_t *value)
+int VMread(uint64_t virtualAddress, word_t *value)
 {
-  uint64_t physical_address=translate (virtualAddress, 0);
-  int ret = int (physical_address);
+    uint64_t physical_address = translate(virtualAddress, 0);
+    int ret = int(physical_address);
 
-  // If the translation failed, then do nothing.
-  if (ret == 0)
+    // If the translation failed, then do nothing.
+    if (ret == 0)
     {
-      return 0;
+        return 0;
     }
-  // Read the value from the physical address.
-  PMread (physical_address, value);
-  return 1;
+    // Read the value from the physical address.
+    PMread(physical_address, value);
+    return 1;
 }
 
 /* Writes a word to the given virtual address.
@@ -340,29 +391,23 @@ int VMread (uint64_t virtualAddress, word_t *value)
  * returns 0 on failure (if the address cannot be mapped to a physical
  * address for any reason)
  */
-int VMwrite (uint64_t virtualAddress, word_t value)
+int VMwrite(uint64_t virtualAddress, word_t value)
 {
-  uint64_t physical_address=translate (virtualAddress, 0);
-  int ret = int (physical_address);
+    uint64_t physical_address = translate(virtualAddress, 0);
+    int ret = int(physical_address);
 
-  // If the translation failed, then do nothing.
-  if (ret == 0)
+    // If the translation failed, then do nothing.
+    if (ret == 0)
     {
-      return 0;
+        return 0;
     }
 
-  // Read the value from the physical address.
-  PMwrite(physical_address, value);
-  return 1;
+    // Read the value from the physical address.
+    PMwrite(physical_address, value);
+    return 1;
 }
 
 
-
-//int main(){
-//    uint64_t num=0b11110101000101100001;;
-//    iterations(num,0);
-//    return 0;
-//}
 
 
 //uint64_t
