@@ -158,7 +158,8 @@ uint64_t currentPage, pageToEvictInfo pageInfo)
           PMread (cellInPM, &valInCell);
           if (valInCell != 0)
             {
-              uint64_t tmpPage=(currentPage+i)<<OFFSET_WIDTH;
+              uint64_t tmpPage=(currentPage<<OFFSET_WIDTH)+i;
+//              printf ("tmp page %lu val in cell %d\n",tmpPage,valInCell);
               pageInfo = case3 (pages, treeLevel + 1,
                                                 valInCell,
                                                 frameMaxCyclicDist,
@@ -172,9 +173,6 @@ uint64_t currentPage, pageToEvictInfo pageInfo)
             }
         }
     }
-
-
-
   //page? return val?
   //path - shift left <<offsetwidth+i(child num)(shift left to temp address)
   return pageInfo;
@@ -208,11 +206,7 @@ frameIndex)
       PMread (newAddress, &frameVal);
       if (frameVal == 0)//frameVal!=0 handle
         {
-          //case 1: a frame containing an empty table - all rows are 0, remove reference from its parents
-          uint64_t frameToSent = 0;
-          uint64_t case1Frame = case1 (pages, 0, 0, 0, frameIndex);//todo
-          // frameIndex or 0?
-          // calling frame
+          uint64_t case1Frame = case1 (pages, 0, 0, 0, frameIndex);
           if (case1Frame != 0)
             {
               PMwrite (newAddress, (word_t) case1Frame);
@@ -220,35 +214,24 @@ frameIndex)
               continue;
             }
 
-          //case 2: an unused frame, keep variable with maximal frame index reference from any table we visit, if
-          // max_frame_index+1 < NUM_FRAMES then we know that the frame in the index (max_frame_index + 1) is unused.
           uint64_t case2Frame = case2 (0, 0);
-
-//            // Reached the last level of the tree
           if (case2Frame + 1 < NUM_FRAMES)
             {
               PMwrite (newAddress, (word_t) case2Frame + 1);
               fillFrameWithZeros (case2Frame + 1);
               frameIndex=case2Frame+1;//?
               continue;
-
             }
 
-          //case 3: ll frames are already used. swapped + cyclic
           pageToEvictInfo pageInfo={0,0,0,0,0,0};
           pageToEvictInfo pageToEvict= case3 (pages,0,0,0,0,0,0,0,pageInfo);
-          if(true){//if pageToEvict.frameMaxCyclicDist in rangee , if
-            // maxCyclicDist!=0?
-              PMevict (pageToEvict.maxDistFrameIndex,pageToEvict.pageNumInLeaf);
-              if(i!=TABLES_DEPTH-1){
-                  fillFrameWithZeros (frameIndex);
-              }
-              PMwrite (pageToEvict.parent+i,0);//??
+          PMevict (pageToEvict.maxDistFrameIndex,pageToEvict.pageNumInLeaf);
+          if(i!=TABLES_DEPTH-1){
+              fillFrameWithZeros (pageToEvict.maxDistFrameIndex);
           }
-          //if depth nit table depth - if not in leaf - reset frame
-          //parent remove reference to the evicted page
-
-//          PMwrite(newAddress,(word_t )(*frameMaxCyclicDist));
+          PMwrite (pageToEvict.parent*PAGE_SIZE+pageToEvict.index,0);//??
+          PMwrite(newAddress,(word_t )pageToEvict.maxDistFrameIndex);
+          frameIndex=pageToEvict.maxDistFrameIndex;
         }
       else
         {
