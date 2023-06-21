@@ -16,29 +16,6 @@ typedef struct  {
     uint64_t index;
 }pageToEvictInfo;
 
-/**
- * Extracts the page number from the virtual address
- * @param virtualAddress
- * @return
- */
-uint64_t extractPageNumber (uint64_t virtualAddress)
-{
-  const uint64_t offsetMask = (1ULL << OFFSET_WIDTH) - 1;
-  const uint64_t pageMask = ~offsetMask;
-  return virtualAddress & pageMask;
-}
-
-/**
- * Extracts the offset from the virtual address
- * @param virtualAddress
- * @return
- */
-uint64_t extractOffset (uint64_t virtualAddress)
-{
-  const uint64_t offsetMask = (1ULL << OFFSET_WIDTH) - 1;
-  return virtualAddress & offsetMask;
-}
-
 void fillFrameWithZeros (uint64_t frameNumber)
 {
   for (uint64_t i = 0; i < PAGE_SIZE; ++i)
@@ -144,7 +121,6 @@ case3 (uint64_t pages, uint64_t treeLevel, uint64_t frameIndex, uint64_t
 frameMaxCyclicDist, uint64_t maxCyclicDist, uint64_t parent,uint64_t index,
 uint64_t currentPage, pageToEvictInfo pageInfo)
 {
-//  pageToEvictInfo pageInfo;
   if (treeLevel == TABLES_DEPTH)
     {
       uint64_t cyclicVal = cyclicNum (currentPage, pages);
@@ -160,7 +136,6 @@ uint64_t currentPage, pageToEvictInfo pageInfo)
           if (valInCell != 0)
             {
               uint64_t tmpPage=(currentPage<<OFFSET_WIDTH)+i;
-//              printf ("tmp page %lu val in cell %d\n",tmpPage,valInCell);
               pageInfo = case3 (pages, treeLevel + 1,
                                                 valInCell,
                                                 frameMaxCyclicDist,
@@ -174,13 +149,9 @@ uint64_t currentPage, pageToEvictInfo pageInfo)
             }
         }
     }
-  //page? return val?
-  //path - shift left <<offsetwidth+i(child num)(shift left to temp address)
   return pageInfo;
 }
 
-
-//struct: frame ,max value, parent
 
 uint64_t
 translate (uint64_t virtualAddress, uint64_t
@@ -192,20 +163,16 @@ frameIndex)
     }
   uint64_t offset = virtualAddress % PAGE_SIZE;
   uint64_t pages = virtualAddress / PAGE_SIZE;//ignore garbage values
-  uint64_t framesInUse[TABLES_DEPTH];
-  //    uint64_t numBitsPage=(VIRTUAL_ADDRESS_WIDTH-OFFSET_WIDTH)/TABLES_DEPTH;
-  uint64_t availableFrame;//initialize?
   uint64_t physicalAddress;
-
   for (int i = 0; i < TABLES_DEPTH; i++)
     {
       uint64_t currentBits = (pages >> (OFFSET_WIDTH * (TABLES_DEPTH - i - 1)))
                              & ((1 << OFFSET_WIDTH)
-                                - 1);//check for different values
+                                - 1);
       uint64_t newAddress = frameIndex * PAGE_SIZE + currentBits;
       word_t frameVal;
       PMread (newAddress, &frameVal);
-      if (frameVal == 0)//frameVal!=0 handle
+      if (frameVal == 0)
         {
           uint64_t case1Frame = case1 (pages, 0, 0, 0, frameIndex);
           if (case1Frame != 0)
@@ -220,7 +187,7 @@ frameIndex)
             {
               PMwrite (newAddress, (word_t) case2Frame + 1);
               fillFrameWithZeros (case2Frame + 1);
-              frameIndex=case2Frame+1;//?
+              frameIndex=case2Frame+1;
               continue;
             }
 
