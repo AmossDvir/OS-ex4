@@ -282,6 +282,7 @@ frameIndex)
     uint64_t availableFrame;//initialize?
     uint64_t physicalAddress;
 
+
     for (int i = 0; i < TABLES_DEPTH; i++)
     {
         uint64_t currentBits = (pages >> (OFFSET_WIDTH * (TABLES_DEPTH - i - 1)))

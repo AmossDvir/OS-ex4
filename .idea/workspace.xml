@@ -20,14 +20,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3179cb4d-12c1-41ee-a6c4-cb981ce38ffb" name="Changes" comment="cases implementation1">
+    <list default="true" id="3179cb4d-12c1-41ee-a6c4-cb981ce38ffb" name="Changes" comment="continue">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PhysicalMemory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/PhysicalMemory.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PhysicalMemory.h" beforeDir="false" afterPath="$PROJECT_DIR$/PhysicalMemory.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SimpleTest.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/SimpleTest.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/VirtualMemory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/VirtualMemory.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VirtualMemory.h" beforeDir="false" afterPath="$PROJECT_DIR$/VirtualMemory.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,9 +76,9 @@
   }
 }</component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="ex4" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="ex4" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ex4" RUN_TARGET_NAME="ex4">
@@ -128,7 +123,21 @@
       <option name="project" value="LOCAL" />
       <updated>1687276161735</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="update">
+      <created>1687342602759</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1687342602759</updated>
+    </task>
+    <task id="LOCAL-00005" summary="continue">
+      <created>1687342743961</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1687342743961</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -144,7 +153,9 @@
     <MESSAGE value="CHANGES PAGES PARSING" />
     <MESSAGE value="cases implementation" />
     <MESSAGE value="cases implementation1" />
-    <option name="LAST_COMMIT_MESSAGE" value="cases implementation1" />
+    <MESSAGE value="update" />
+    <MESSAGE value="continue" />
+    <option name="LAST_COMMIT_MESSAGE" value="continue" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -159,12 +170,6 @@
           <url>file://$PROJECT_DIR$/SimpleTest.cpp</url>
           <line>9</line>
           <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <condition expression="childIndex==103" language="ObjectiveC" />
-          <url>file://$PROJECT_DIR$/VirtualMemory.cpp</url>
-          <line>213</line>
-          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
