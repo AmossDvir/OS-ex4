@@ -11,7 +11,22 @@
   </component>
   <component name="CMakeRunConfigurationManager">
     <generated>
-      <config projectName="ex4" targetName="ex4" />
+      <config projectName="ex4" targetName="ex4Tests_NoEviction" />
+      <config projectName="ex4" targetName="SingleTableVirtualMemory" />
+      <config projectName="ex4" targetName="ex4Tests_NormalConstants" />
+      <config projectName="ex4" targetName="gmock_main" />
+      <config projectName="ex4" targetName="gtest" />
+      <config projectName="ex4" targetName="ex4Tests_UnreachableFrames" />
+      <config projectName="ex4" targetName="ex4Tests_OffsetDifferentThanIndex" />
+      <config projectName="ex4" targetName="NoEvictionVirtualMemory" />
+      <config projectName="ex4" targetName="ex4Tests_SmallConstants" />
+      <config projectName="ex4" targetName="OffsetDifferentThanIndexMemory" />
+      <config projectName="ex4" targetName="TestVirtualMemory" />
+      <config projectName="ex4" targetName="UnreachableFramesVirtualMemory" />
+      <config projectName="ex4" targetName="VirtualMemory" />
+      <config projectName="ex4" targetName="gmock" />
+      <config projectName="ex4" targetName="ex4Tests_SingleTable" />
+      <config projectName="ex4" targetName="gtest_main" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -20,8 +35,18 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3179cb4d-12c1-41ee-a6c4-cb981ce38ffb" name="Changes" comment="passed 2 yaara test">
+    <list default="true" id="3179cb4d-12c1-41ee-a6c4-cb981ce38ffb" name="Changes" comment="continue">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MemoryConstants.h" beforeDir="false" afterPath="$PROJECT_DIR$/MemoryConstants.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PhysicalMemory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/PhysicalMemory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PhysicalMemory.h" beforeDir="false" afterPath="$PROJECT_DIR$/PhysicalMemory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/READMETEST" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SimpleTest.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/SimpleTest.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VirtualMemory.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/VirtualMemory.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CMakeLists.txt.in" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CMakeLists.txt.in" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,12 +99,116 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager">
-    <configuration name="ex4" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="ex4" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ex4" RUN_TARGET_NAME="ex4">
+  <component name="RunManager" selected="Google Test.ex4Tests_NoEviction">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ex4Tests_NoEviction" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="ex4Tests_NoEviction" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ex4" RUN_TARGET_NAME="ex4Tests_NoEviction" TEST_MODE="PATTERN">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ex4Tests_NormalConstants" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="ex4Tests_NormalConstants" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ex4" RUN_TARGET_NAME="ex4Tests_NormalConstants" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ex4Tests_OffsetDifferentThanIndex" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="ex4Tests_OffsetDifferentThanIndex" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ex4" RUN_TARGET_NAME="ex4Tests_OffsetDifferentThanIndex" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ex4Tests_SingleTable" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="ex4Tests_SingleTable" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ex4" RUN_TARGET_NAME="ex4Tests_SingleTable" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ex4Tests_SmallConstants" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="ex4Tests_SmallConstants" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ex4" RUN_TARGET_NAME="ex4Tests_SmallConstants" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ex4Tests_UnreachableFrames" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="ex4Tests_UnreachableFrames" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ex4" RUN_TARGET_NAME="ex4Tests_UnreachableFrames" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NoEvictionVirtualMemory" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="NoEvictionVirtualMemory" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="OffsetDifferentThanIndexMemory" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="OffsetDifferentThanIndexMemory" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SingleTableVirtualMemory" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="SingleTableVirtualMemory" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestVirtualMemory" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="TestVirtualMemory" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UnreachableFramesVirtualMemory" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="UnreachableFramesVirtualMemory" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="VirtualMemory" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="VirtualMemory" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gmock" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="gmock" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gmock_main" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="gmock_main" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gtest" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="gtest" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gtest_main" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ex4" TARGET_NAME="gtest_main" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.NoEvictionVirtualMemory" />
+      <item itemvalue="CMake Application.OffsetDifferentThanIndexMemory" />
+      <item itemvalue="CMake Application.SingleTableVirtualMemory" />
+      <item itemvalue="CMake Application.TestVirtualMemory" />
+      <item itemvalue="CMake Application.UnreachableFramesVirtualMemory" />
+      <item itemvalue="CMake Application.VirtualMemory" />
+      <item itemvalue="CMake Application.gmock" />
+      <item itemvalue="CMake Application.gmock_main" />
+      <item itemvalue="CMake Application.gtest" />
+      <item itemvalue="CMake Application.gtest_main" />
+      <item itemvalue="Google Test.ex4Tests_NoEviction" />
+      <item itemvalue="Google Test.ex4Tests_NormalConstants" />
+      <item itemvalue="Google Test.ex4Tests_OffsetDifferentThanIndex" />
+      <item itemvalue="Google Test.ex4Tests_SingleTable" />
+      <item itemvalue="Google Test.ex4Tests_SmallConstants" />
+      <item itemvalue="Google Test.ex4Tests_UnreachableFrames" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -95,7 +224,7 @@
       <workItem from="1687103966474" duration="8641000" />
       <workItem from="1687170855392" duration="15154000" />
       <workItem from="1687189855740" duration="78000" />
-      <workItem from="1687342786151" duration="4000" />
+      <workItem from="1687366273182" duration="7403000" />
     </task>
     <task id="LOCAL-00001" summary="CHANGES PAGES PARSING">
       <created>1687186347118</created>
@@ -118,35 +247,21 @@
       <option name="project" value="LOCAL" />
       <updated>1687276161735</updated>
     </task>
-    <task id="LOCAL-00004" summary="555">
-      <created>1687289397390</created>
+    <task id="LOCAL-00004" summary="update">
+      <created>1687342602759</created>
       <option name="number" value="00004" />
       <option name="presentableId" value="LOCAL-00004" />
       <option name="project" value="LOCAL" />
-      <updated>1687289397390</updated>
+      <updated>1687342602759</updated>
     </task>
-    <task id="LOCAL-00005" summary="555">
-      <created>1687289416309</created>
+    <task id="LOCAL-00005" summary="continue">
+      <created>1687342743961</created>
       <option name="number" value="00005" />
       <option name="presentableId" value="LOCAL-00005" />
       <option name="project" value="LOCAL" />
-      <updated>1687289416309</updated>
+      <updated>1687342743961</updated>
     </task>
-    <task id="LOCAL-00006" summary="55555">
-      <created>1687289428601</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1687289428601</updated>
-    </task>
-    <task id="LOCAL-00007" summary="passed 2 yaara test">
-      <created>1687365891321</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1687365891321</updated>
-    </task>
-    <option name="localTasksCounter" value="8" />
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -162,10 +277,9 @@
     <MESSAGE value="CHANGES PAGES PARSING" />
     <MESSAGE value="cases implementation" />
     <MESSAGE value="cases implementation1" />
-    <MESSAGE value="555" />
-    <MESSAGE value="55555" />
-    <MESSAGE value="passed 2 yaara test" />
-    <option name="LAST_COMMIT_MESSAGE" value="passed 2 yaara test" />
+    <MESSAGE value="update" />
+    <MESSAGE value="continue" />
+    <option name="LAST_COMMIT_MESSAGE" value="continue" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -182,29 +296,15 @@
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/YaaraTest.cpp</url>
-          <line>98</line>
+          <condition expression="i == 3" language="ObjectiveC" />
+          <url>file://$PROJECT_DIR$/VirtualMemory2.cpp</url>
+          <line>195</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/VirtualMemory.cpp</url>
+          <line>251</line>
           <option name="timeStamp" value="19" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/YaaraTest.cpp</url>
-          <line>92</line>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/VirtualMemory.cpp</url>
-          <line>148</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/VirtualMemory.cpp</url>
-          <line>238</line>
-          <option name="timeStamp" value="34" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/YaaraTest.cpp</url>
-          <line>82</line>
-          <option name="timeStamp" value="35" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
