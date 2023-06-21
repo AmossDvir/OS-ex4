@@ -44,7 +44,7 @@ void fillFrameWithZeros(uint64_t frameNumber)
  */
 bool validatePageNumber(uint64_t virtualAddress)
 {
-    return (virtualAddress < VIRTUAL_MEMORY_SIZE);//check
+    return (virtualAddress < VIRTUAL_MEMORY_SIZE);
 }
 
 uint64_t concatenateBits(uint64_t frameNum, uint64_t offset)
@@ -171,103 +171,101 @@ bool isFrameEmptyTable(uint64_t frameIndex)
 
 
 uint64_t
-case1(uint64_t pages, int treeLevel, uint64_t frameIndex, uint64_t parent, word_t callingFrameIndex)
-{
+case1(uint64_t pages, int treeLevel, uint64_t frameIndex, uint64_t parent, uint64_t callingFrameIndex,int childIndex=0) {
 
-    if (treeLevel == TABLES_DEPTH)
-    {
-        return callingFrameIndex;
+    if ((treeLevel == TABLES_DEPTH) || (frameIndex == callingFrameIndex)) {
+        return 0;
     }
+    if (isFrameEmptyTable(frameIndex)) {
+        PMwrite(parent*PAGE_SIZE+childIndex,0);
+        return frameIndex;
+    }
+    for (int i = 0; i < PAGE_SIZE; i++) {
+        uint64_t cellInPM = frameIndex * PAGE_SIZE + i;
+        word_t valInCell;
+        PMread(cellInPM, &valInCell);
+        if (valInCell != 0) {
+            uint64_t childCheck = case1(pages, treeLevel + 1, valInCell, frameIndex, callingFrameIndex,i);
+            if (childCheck != 0) {
+                return childCheck;
+            }
+        }
+    }
+    return 0;
+}
 
 
-    uint64_t currentOffset =
-            (pages >> (OFFSET_WIDTH * (TABLES_DEPTH - treeLevel - 1)))
-            & ((1 << OFFSET_WIDTH) - 1);//todo check for different values
-    uint64_t cellInPM = frameIndex * PAGE_SIZE + currentOffset;
-    if (isFrameEmptyTable(frameIndex) && frameIndex != callingFrameIndex)
-    {
-        // remove reference to this table from its parent
-        PMwrite(parent, 0);
-        //check if frame 0??
+uint64_t case2( int treeLevel, uint64_t frameIndex) {
+
+    if (treeLevel == TABLES_DEPTH) {
         return frameIndex;
     }
 
-    word_t childIndex = 0;
-    PMread(cellInPM, &childIndex);
-    if (childIndex == 0)
-    {
-        // Reached an empty frame, return the current frame index
-        return frameIndex;
+    uint64_t maxFrameIndex = frameIndex;
+    for (int i = 0; i < PAGE_SIZE; ++i) {
+        uint64_t cellInPM = frameIndex * PAGE_SIZE + i;
+        word_t valInCell;
+        PMread(cellInPM, &valInCell);
+        if (valInCell != 0) {
+            uint64_t childCheck = case2(treeLevel + 1, valInCell);
+            if (childCheck > maxFrameIndex) {
+                maxFrameIndex = childCheck;
+            }
+        }
     }
-    return case1(pages,
-                 treeLevel + 1, childIndex,
-                 frameIndex, callingFrameIndex);
+    return maxFrameIndex;
 }
 
 
-uint64_t case2(uint64_t pages, int treeLevel, uint64_t frameIndex,
-               uint64_t maxIndex, uint64_t parent, uint64_t callingFrameIndex)
-{
-    uint64_t currentOffset = (pages >> (OFFSET_WIDTH * (TABLES_DEPTH - treeLevel - 1))) & ((1 << OFFSET_WIDTH) - 1);
-    uint64_t cellInPM = frameIndex * PAGE_SIZE + currentOffset;
 
-    // Read the child frame index from the physical memory
-    word_t childFrameIndex = 0;
-    PMread(cellInPM, &childFrameIndex);
 
-    if (treeLevel == TABLES_DEPTH)
-    {
-        // Reached the last level of the tree
-        if (maxIndex + 1 < NUM_FRAMES)
-        {
-            // If max_frame_index+1 < NUM_FRAMES, return the next unused frame index
-            return maxIndex + 1;
+//uint64_t
+//case3(uint64_t page, uint64_t parent, int treeLevel, uint64_t maxCyclicDist,
+//      uint64_t
+//      pageSwappedIn,uint64_t frameIndex,uint64_t maxFrameIndex)
+//{
+//    //calculate cyclic distance between leafs and the pages and get the maximal
+//
+//    if (treeLevel == TABLES_DEPTH)
+//    {
+//        //case 3: frames are already used. swapped + cyclic
+//      return (cyclicNum(pageSwappedIn, page),frameIndex);//todo
+//    }
+//    uint64_t maxCyclicDistance=0;
+//    uint64_t frameMaxDistance=0;
+//    for (int i = 0; i < PAGE_SIZE; ++i) {
+//        uint64_t cellInPM = frameIndex * PAGE_SIZE + i;
+//        word_t valInCell;
+//        PMread(cellInPM, &valInCell);
+//        if (valInCell != 0) {
+//            uint64_t childCyclicDistance=case3(page,0,treeLevel+1,maxCyclicDist,0,frameIndex);
+//            if (childCyclicDistance > maxCyclicDistance) {
+//                maxCyclicDistance=childCyclicDistance;
+//                frameMaxDistance=frameIndex;
+//            }
+//        }
+//    }
+//    return frameIndex;
+//// s   return case3(page, parent, treeLevel + 1, maxCyclicDist, pageSwappedIn);
+//}
+void
+case3(uint64_t page,uint64_t treeLevel, uint64_t frameIndex,uint64_t* frameMaxCyclicDist,uint64_t*maxCyclicDist) {
+    if (treeLevel == TABLES_DEPTH) {
+        //case 3: frames are already used. swapped + cyclic
+        uint64_t currentFrameLeafCyclicDist(cyclicNum(frameIndex, page));
+        if (currentFrameLeafCyclicDist > *maxCyclicDist) {
+            *maxCyclicDist = currentFrameLeafCyclicDist;
+            *frameMaxCyclicDist = frameIndex;
         }
-        return callingFrameIndex;
-    }
-
-    if (childFrameIndex == 0)
-    {
-        // Unused frame found, create new tables
-        if (frameIndex + 1 > maxIndex)
-        {
-            maxIndex = frameIndex + 1;
+    } else {
+        for (int i = 0; i < PAGE_SIZE; ++i) {
+            uint64_t cellInPM = frameIndex * PAGE_SIZE + i;
+            word_t valInCell;
+            PMread(cellInPM, &valInCell);
+            case3(page, treeLevel + 1, valInCell, frameMaxCyclicDist, maxCyclicDist);
         }
-        fillFrameWithZeros(frameIndex + 1);
-        PMwrite(parent, frameIndex + 1);
-        return case2(pages, treeLevel + 1, frameIndex + 1, maxIndex, frameIndex, callingFrameIndex);
     }
-
-    // Update the maxIndex if necessary
-    if (childFrameIndex > maxIndex)
-    {
-        maxIndex = childFrameIndex;
-    }
-
-    // No unused frame found, return the current frame index
-    return frameIndex;
 }
-
-
-uint64_t
-case3(uint64_t page, uint64_t parent, int treeLevel, uint64_t maxCyclicDist,
-      uint64_t
-      pageSwappedIn)
-{
-    //if maxFrame=NUM_FRAME
-    if (treeLevel == TABLES_DEPTH)
-    {
-        //case 3: ll frames are already used. swapped + cyclic
-        uint64_t currFrameCyclic = cyclicNum(pageSwappedIn, page);
-        if (currFrameCyclic > maxCyclicDist)
-        {
-            maxCyclicDist = currFrameCyclic;
-        }
-        return page;//???
-    }
-    return case3(page, parent, treeLevel + 1, maxCyclicDist, pageSwappedIn);
-}
-
 
 uint64_t
 translate(uint64_t virtualAddress, uint64_t
@@ -291,38 +289,36 @@ frameIndex)
         uint64_t newAddress = frameIndex * PAGE_SIZE + currentBits;
         word_t frameVal;
         PMread(newAddress, &frameVal);
-        if (frameVal == 0)
+        if (frameVal == 0)//frameVal!=0 handle
         {
             //case 1: a frame containing an empty table - all rows are 0, remove reference from its parents
             uint64_t frameToSent = 0;
-            uint64_t case1Frame = case1(pages, 0, frameIndex, 0, 0);//todo
+            uint64_t case1Frame = case1(pages, 0, 0, 0,frameIndex);//todo
             // calling frame
-            if (frameToSent != case1Frame)
-            {
-                availableFrame = case1Frame;//???
-                physicalAddress = concatenateBits(availableFrame, offset);
-                continue;
+            if(case1Frame!=0){
+                PMwrite(newAddress,(word_t )case1Frame);
             }
 
             //case 2: an unused frame, keep variable with maximal frame index reference from any table we visit, if
             // max_frame_index+1 < NUM_FRAMES then we know that the frame in the index (max_frame_index + 1) is unused.
-            uint64_t case2Frame = case2(pages, 0, frameIndex,
-                                        0, 0, 0);
-            if (frameToSent != case2Frame)
-            {
-                availableFrame = case2Frame;//???
-                physicalAddress = concatenateBits(availableFrame, offset);//
-                continue;
-            }
-            //case 3: ll frames are already used. swapped + cyclic
+            uint64_t case2Frame = case2( 0, 0);
 
-            uint64_t case3Frame = case3(pages, 0, 0, 0, 0);
-            if (frameToSent != case3Frame)
+//            // Reached the last level of the tree
+            if (case2Frame + 1 < NUM_FRAMES)
             {
-                availableFrame = case3Frame;
-                physicalAddress = concatenateBits(availableFrame, offset);
-                continue;
+                PMwrite(newAddress,(word_t )case2Frame + 1);
+                fillFrameWithZeros(case2Frame+1);
+
             }
+//            //case 3: ll frames are already used. swapped + cyclic
+//            uint64_t tmp=PMe
+            uint64_t *frameMaxCyclicDist;
+            uint64_t *maxCyclicDist;
+            case3(pages,0,frameIndex,frameMaxCyclicDist,maxCyclicDist);//calculate cyclic distance between leafs and the pages and get the maximi
+            PMwrite(newAddress,(word_t )(*frameMaxCyclicDist));
+            }
+        else{
+            frameIndex=frameVal;
         }
     }
     return physicalAddress;
